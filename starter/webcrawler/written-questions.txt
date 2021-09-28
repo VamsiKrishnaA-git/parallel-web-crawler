@@ -1,0 +1,74 @@
+Written Questions
+
+Q1. Run the web crawler using the configurations located at src/main/config/written_question_1a.json and
+    src/main/config/written_question_1b.json. The only difference between these configurations is that one always uses
+    the sequential crawler and the other always uses the parallel crawler. Inspect the profile output in
+    profileData.txt.
+
+    If you are using a multi-processor computer, you should notice that SequentialWebCrawler#crawl and
+    ParallelWebCrawler#crawl took about the same amount of time, but PageParserImpl#parse took much longer when run with
+    the ParallelWebCrawler.
+
+    Why did the parser take more time when run with ParallelWebCrawler?
+    1. It's because the number of crawl method calls are more compared to the sequential crawler as it runs parallel process
+        so, each crawl has a parse method call associated with it so it takes more time for parallel crawler to process all
+        the requests.
+
+
+Q2. Your manager ran your crawler on her old personal computer, using the configurations from Q1, and she notices that
+    the sequential crawler actually outperforms the parallel crawler. She would like to know why.
+
+    (a) Suggest one reason why the sequential web crawler was able to read more web pages than the parallel crawler.
+        (Hint: Try setting "parallelism" to 1 in the JSON configs to simulate your manager's computer.)
+        1. This happens when the computer doesn't support parallelism, but we used parallel configuration to run which
+            includes creating of threads, some system calls etc and creates additional overhead than sequential crawler
+            so, instead it actually reduces the performance.
+
+    (b) Suggest one scenario in which the parallel web crawler will almost certainly perform better than the sequential
+        crawler. Why will it perform better?
+        1. Consider a scenario where your computer supports parallelism and your task is to crawl a large site (heavy task)
+            , with multiple tasks in such a scenario parallel web crawler will outperform sequential crawler.
+            It's because at a time multiple processes are executing at same time to complete the task where as in sequential
+            only one process does all the work. Moreover, since it's a large task the initial overhead for concurrent programming
+            (System calls, thread creation, etc) will pay off in long run of the program.
+
+
+Q3. Analyze your method profiler through the lens of Aspect Oriented Programming, by answering the following questions:
+
+    (a) What cross-cutting concern is being addressed by the com.udacity.webcrawler.profiler.Profiler class?
+        1. It takes care of Profiling the Performance of the Crawler by recording time taken by method calls to
+            complete during a particular run of the program. So we can compare performance between sequential and
+            parallel crawlers.
+
+    (b) What are the join points of the Profiler in the web crawler program?
+        1. The crawl Method of WebCrawler
+        2. The parse Method of PageParser
+
+
+Q4. Identify three (3) different design patterns used in this project, and explain which interfaces, classes, and/or
+    libraries use or implement those design patterns.
+
+    For each pattern, name one thing about the pattern that you LIKED, and one thing you DISLIKED. If you did not like
+    anything, you can name two things you disliked.
+
+    1. Creational patterns
+        a. PageParserFactory, PageParserFactoryImpl using Abstarct Factories
+        b. PageParser, PageParserImpl using builder
+        c. CrawlerConfiguration, CrawlResultWritter, ParallelWebCrawler, WebCrawler, SequentialWebCrawler uses builder
+        Likes and DisLikes:
+        a. Help you manage the creation of objects as your code becomes more complex.
+        b. Often used to create immutablble data objects.
+
+    2. Behavioral Patterns
+        a. Profiler, ProfileImpl, ProfileMethodInterceptor, ProfilingState all uses behavioural patterns template method
+        Likes and Diskikes:
+        a. These patterns simplify complex processes for controlling and monitoring.
+        b. Complex in nature.
+
+    3. Decorator Patterns
+        a. WebCrawler, ParallelWebCrawler, SequentialWebCrawler, CrawlInternal
+        Likes and DisLikes:
+        a. allows you to add some behavior without recompiling source code.
+        b. can change behaviour at runtime
+
+
